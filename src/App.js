@@ -1,6 +1,8 @@
 import React from 'react';
 import './App.css';
+import GroceryItem from './GroceryItem';
 import Header from './Header';
+import NewItemForm from './NewItemForm';
 class App extends React.Component {
 
   constructor(props) {
@@ -19,6 +21,24 @@ class App extends React.Component {
         },
       ]
     }
+
+    this.addGroceryItem = this.addGroceryItem.bind(this)
+    this.toggleItem = this.toggleItem.bind(this)
+  }
+
+  addGroceryItem(groceryItem) {
+    let items = this.state.items.slice()
+    items.push(groceryItem)
+    this.setState({ items: items })
+  }
+
+  toggleItem(index) {
+    let items = this.state.items.slice();
+    let item = items[index];
+    item.purchased = !item.purchased;
+    this.setState({
+      items: items,
+    });
   }
 
   render() {
@@ -30,51 +50,13 @@ class App extends React.Component {
             <div className="columns">
 
               <div className="column is-half is-offset-one-quarter">
-                <form>
-                  <div className="field has-addons">
-                    <div className="control">
-                      <input
-                        style={{ maxWidth: "6em" }}
-                        className="input"
-                        type="number"
-                        placeholder="2"
-                        min="1"
-                        aria-label="number to purchase" />
-                    </div>
 
-                    <div className="control is-expanded">
-                      <input
-                        className="input"
-                        type="text"
-                        placeholder="Item to buy"
-                        aria-label="item to purchase" />
-                    </div>
-
-                    <div className="control">
-                      <input
-                        className="button is-info"
-                        type="submit"
-                        value="Add Item" />
-                    </div>
-                  </div>
-                </form>
+                <NewItemForm addItem={this.addGroceryItem} />
 
                 <div className="my-5">
                   <ul>
                     {this.state.items.map((item, index) => (
-                      <li key={index}>
-                        <label
-                          className="checkbox"
-                          style={{
-                            textDectoration: item.purchased
-                              ? "line-through"
-                              : "none",
-                          }}
-                        >
-                          <input checked={item.purchased} className="mr-3" type="checkbox" />
-                          {item.name} <span className="has-text-weight-light">({item.number})</span>
-                        </label>
-                      </li>
+                      <GroceryItem key={index} item={item} toggleItem={() => this.toggleItem(index)}></GroceryItem>
                     ))}
                   </ul>
                 </div>
